@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Demo client portal with CXone Guide and chat integration.">
+  <title>NexusPortal - Account Overview</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #ba5624;
+      --orange-dark: #8f3e19;
+      --orange-light: #d78359;
+      --grey: #D7D2CB;
+      --grey-light: #F1EEEA;
+      --red: #983222;
+      --black: #000000;
+      --charcoal: #1D1B19;
+      --text: #433E3A;
+      --muted: #746C66;
+      --white: #ffffff;
+      --offwhite: #FAF8F5;
+      --border: rgba(29, 27, 25, 0.12);
+      --shadow: 0 12px 32px rgba(29, 27, 25, 0.09);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', Arial, sans-serif;
+      background: var(--offwhite);
+      color: var(--charcoal);
+      line-height: 1.7;
+    }
+
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(186, 86, 36, 0.35);
+      outline-offset: 3px;
+    }
+
+    .top-bar {
+      min-height: 36px;
+      padding: 0.45rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--black);
+      color: rgba(255,255,255,0.62);
+      font-size: 0.72rem;
+      letter-spacing: 0.8px;
+    }
+    .top-bar strong { color: var(--grey); font-weight: 500; }
+    .top-bar-right { display: flex; gap: 1.5rem; align-items: center; }
+    .account-tier {
+      padding: 0.2rem 0.65rem;
+      border-radius: 2px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(250,248,245,0.96);
+      backdrop-filter: blur(10px);
+    }
+    .header-inner {
+      width: min(1280px, 100%);
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .logo {
+      color: var(--black);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.4rem;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .logo span { color: var(--orange); }
+    .logo sup {
+      margin-left: 5px;
+      color: var(--muted);
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 0.48rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      vertical-align: super;
+    }
+    nav { display: flex; gap: 1.75rem; }
+    nav a {
+      color: var(--text);
+      font-size: 0.78rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    nav a:hover { color: var(--orange); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0.55rem 1.4rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--orange); color: var(--white); }
+    .btn-primary:hover { background: var(--red); }
+    .btn-outline { border-color: var(--border); background: transparent; color: var(--text); }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 4rem 2rem 0;
+      background: linear-gradient(145deg, var(--black) 0%, #2a1a14 38%, var(--red) 72%, var(--orange) 100%);
+    }
+    .hero::before {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 70% at 86% 25%, rgba(215,210,203,0.16), transparent 68%),
+        radial-gradient(ellipse 45% 80% at 3% 95%, rgba(186,86,36,0.22), transparent 65%);
+      content: '';
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; width: min(1280px, 100%); margin: 0 auto; }
+    .hero-eyebrow {
+      margin-bottom: 0.75rem;
+      color: var(--grey);
+      font-size: 0.68rem;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 650px;
+      margin-bottom: 0.85rem;
+      color: var(--white);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2.35rem, 5vw, 3.65rem);
+      font-weight: 400;
+      line-height: 1.1;
+    }
+    .hero h1 em { color: #efaa78; font-style: italic; }
+    .hero-sub {
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      color: rgba(255,255,255,0.68);
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    .filter-panel {
+      padding: 2rem 2rem 0;
+      border-radius: 9px 9px 0 0;
+      background: var(--white);
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+    }
+    .filter-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-tab {
+      margin-bottom: -1px;
+      padding: 0.6rem 1.4rem;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .filter-tab.active { border-bottom-color: var(--orange); color: var(--orange); }
+    .filter-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+      padding-bottom: 2rem;
+    }
+    .field label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .field input, .field select {
+      width: 100%;
+      min-height: 42px;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: none;
+      background: var(--grey-light);
+      color: var(--charcoal);
+      font-size: 0.86rem;
+    }
+    .field input:focus, .field select:focus { border-color: var(--orange); }
+    .field input::placeholder { color: #8a817b; }
+
+    .content-wrap {
+      width: min(1280px, 100%);
+      margin: 3rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .results-header h2 {
+      color: var(--black);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+    }
+    .results-header span { color: var(--muted); font-size: 0.76rem; }
+    .sort-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .sort-chip {
+      padding: 0.3rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--white);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+    .sort-chip.active, .sort-chip:hover { border-color: var(--orange); background: var(--orange); color: var(--white); }
+
+    .listing-card {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--white);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .listing-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    .card-img {
+      position: relative;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .card-img::after {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255,255,255,0.11);
+      content: '';
+      pointer-events: none;
+    }
+    .card-badge {
+      position: absolute;
+      top: 0.8rem;
+      left: 0.8rem;
+      z-index: 2;
+      padding: 0.25rem 0.65rem;
+      border-radius: 2px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+    .card-badge.review { background: var(--black); color: var(--grey); }
+    .card-body { padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-category {
+      margin-bottom: 0.35rem;
+      color: var(--orange);
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .card-body h3 {
+      margin-bottom: 0.4rem;
+      color: var(--black);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+    }
+    .card-body p { margin-bottom: 1rem; color: var(--muted); font-size: 0.81rem; font-weight: 300; line-height: 1.6; }
+    .card-tags { display: flex; gap: 0.65rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tag {
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--grey-light);
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+    .card-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+    .rate-block .label { color: var(--muted); font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; }
+    .rate-block .rate { color: var(--black); font-family: 'DM Serif Display', Georgia, serif; font-size: 1.55rem; line-height: 1; }
+    .rate-block .sub { color: var(--muted); font-family: 'Inter', Arial, sans-serif; font-size: 0.7rem; }
+    .rate-block .note { margin-top: 0.25rem; color: var(--orange); font-size: 0.7rem; }
+    .card-actions { display: flex; gap: 0.5rem; }
+
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .sidebar-card { padding: 1.5rem; border: 1px solid var(--border); border-radius: 9px; background: var(--white); }
+    .sidebar-card h4 {
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--black);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.12rem;
+      font-weight: 400;
+    }
+    .balance-display {
+      margin-bottom: 1rem;
+      padding: 1.25rem;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--black), var(--red) 60%, var(--orange));
+      text-align: center;
+    }
+    .bal-num { display: block; color: var(--white); font-family: 'DM Serif Display', Georgia, serif; font-size: 2.2rem; line-height: 1; }
+    .bal-label { display: block; margin-top: 0.3rem; color: rgba(255,255,255,0.62); font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; }
+    .feature-list { list-style: none; }
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.79rem;
+    }
+    .feature-list li:last-child { border-bottom: 0; }
+    .feature-list li::before { color: var(--orange); content: '✓'; font-weight: 600; }
+    .activity-item { margin-bottom: 0.75rem; padding: 0.85rem; border-left: 3px solid var(--grey); border-radius: 4px; background: var(--grey-light); }
+    .activity-item .act-title { margin-bottom: 0.2rem; color: var(--charcoal); font-size: 0.8rem; font-weight: 500; }
+    .activity-item .act-date { color: var(--muted); font-size: 0.7rem; }
+    .support-card { border-color: transparent; background: linear-gradient(145deg, var(--black), var(--red) 72%, var(--orange)); }
+    .support-card h4 { border-color: rgba(255,255,255,0.14); color: var(--white); }
+    .support-card p { margin-bottom: 1.25rem; color: rgba(255,255,255,0.72); font-size: 0.8rem; font-weight: 300; }
+    .support-card .btn { width: 100%; background: var(--white); color: var(--red); }
+    .support-card .btn:hover { background: var(--grey); color: var(--black); }
+
+    footer { margin-top: 4rem; background: var(--black); color: rgba(255,255,255,0.44); }
+    .footer-inner {
+      width: min(1280px, 100%);
+      margin: 0 auto;
+      padding: 3rem 2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-logo { margin-bottom: 0.75rem; color: var(--white); font-family: 'DM Serif Display', Georgia, serif; font-size: 1.15rem; }
+    .footer-logo span { color: var(--orange-light); }
+    .footer-description { max-width: 230px; font-size: 0.78rem; font-weight: 300; }
+    .footer-col h5 { margin-bottom: 0.9rem; color: var(--grey); font-size: 0.62rem; letter-spacing: 2.5px; text-transform: uppercase; }
+    .footer-col a { display: block; margin-bottom: 0.45rem; color: rgba(255,255,255,0.44); font-size: 0.78rem; font-weight: 300; text-decoration: none; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.25);
+      font-size: 0.7rem;
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.34); text-decoration: none; }
+
+    @media (max-width: 1000px) {
+      nav { display: none; }
+      .filter-row { grid-template-columns: 1fr 1fr; }
+      .content-wrap { grid-template-columns: 1fr; }
+      .listing-card { grid-template-columns: 230px minmax(0, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .top-bar-right span:first-child { display: none; }
+      .header-inner, .content-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .hero { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .listing-card { grid-template-columns: 1fr; }
+      .card-img { min-height: 175px; }
+    }
+    @media (max-width: 560px) {
+      .top-bar { padding-inline: 1rem; }
+      .top-bar-right { gap: 0.65rem; }
+      .top-bar-right > span:last-child { display: none; }
+      .header-inner { gap: 1rem; }
+      .header-inner > .btn { padding-inline: 0.9rem; }
+      .filter-panel { padding: 1.35rem 1rem 0; }
+      .filter-row { grid-template-columns: 1fr; }
+      .results-header, .card-footer { align-items: flex-start; flex-direction: column; }
+      .card-actions { width: 100%; }
+      .card-actions .btn { flex: 1; }
+    }
+  </style>
+
+  <!--
+    CXone Chat + Guide Widget
+    BU: 5066
+    Replace BOT_USER_ID with the bot's UserHub-visible ACD agentId.
+  -->
+  <script>
+    (function(n,u){
+      window.CXoneDfo=n,
+      window[n]=window[n]||function(){(window[n].q=window[n].q||[]).push(arguments)},window[n].u=u,
+      e=document.createElement("script"),e.type="module",e.src=u+"?"+Math.round(Date.now()/1e3/3600),
+      document.head.appendChild(e)
+      })('cxone','https://web-modules-de-na2.nicecxone-gov.com/loader/1/loader.js');
+
+    cxone('init', '1209');
+    cxone('guide', 'init');
+
+    cxone('chat', 'hideAssignedAgent');
+    cxone('chat', 'enableCloseIcon', true);
+    cxone('chat', 'setCustomerName', 'Jeffco Demo');
+
+    cxone('guide', 'hidePreSurvey');
+
+    cxone('guide', 'setDesiredGuideWidth', '400px');
+    cxone('guide', 'setDesiredGuideHeight', '600px');
+    cxone('guide', 'setButtonSize', '70px');
+
+    cxone('chat', 'setAllowedExternalMessageTypes', [
+      'MESSAGE_SENT',
+      'MESSAGE_RECEIVED'
+    ]);
+
+    cxone('chat', 'setCustomCss', `
+      
+      [data-selector="ACTIVITY_BAR"] {
+          display: none !important;
+      }
+      `);
+
+
+
+
+
+    setTimeout(function () {
+      var style = document.createElement('style');
+      style.textContent = `
+        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus,
+        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus-visible {
+          outline: 0.2em solid #983222 !important;
+          outline-offset: 0 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }, 1000);
+
+    function openCxoneGuide() {
+      var guideButton = document.querySelector('#cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]');
+      if (guideButton) guideButton.click();
+    }
+  </script>
+</head>
+<body>
+  <div class="top-bar">
+    <span>Welcome back, <strong>Jane Smith</strong></span>
+    <div class="top-bar-right">
+      <span>Account #AC-00892</span>
+      <span class="account-tier">Premier</span>
+      <span>Sign Out</span>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">Nexus<span>Portal</span><sup>Client</sup></div>
+      <nav aria-label="Primary navigation">
+        <a href="#">Dashboard</a>
+        <a href="#services">Services</a>
+        <a href="#">Documents</a>
+        <a href="#">Billing</a>
+        <a href="#support">Support</a>
+      </nav>
+      <a href="#" class="btn btn-primary">New Request</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-inner">
+        <p class="hero-eyebrow">Client Account Access</p>
+        <h1 id="page-title">Manage Your <em>Services</em></h1>
+        <p class="hero-sub">View active services, submit requests, and access account details in one centralized experience for Premier clients.</p>
+
+        <div class="filter-panel">
+          <div class="filter-tabs" role="tablist" aria-label="Service status">
+            <button type="button" class="filter-tab active">All Services</button>
+            <button type="button" class="filter-tab">Active</button>
+            <button type="button" class="filter-tab">Pending</button>
+            <button type="button" class="filter-tab">Archived</button>
+          </div>
+          <form class="filter-row" onsubmit="event.preventDefault();">
+            <div class="field">
+              <label for="service-search">Search Services</label>
+              <input id="service-search" type="text" placeholder="Service name or ID...">
+            </div>
+            <div class="field">
+              <label for="category">Category</label>
+              <select id="category">
+                <option>All Categories</option>
+                <option>Account Management</option>
+                <option>Technical Support</option>
+                <option>Billing &amp; Payments</option>
+                <option>Compliance</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="date-from">Date From</label>
+              <input id="date-from" type="date">
+            </div>
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status">
+                <option>Any Status</option>
+                <option>Active</option>
+                <option>Under Review</option>
+                <option>On Hold</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="services" class="content-wrap">
+      <section class="results-col" aria-labelledby="services-title">
+        <div class="results-header">
+          <h2 id="services-title">Your Services</h2>
+          <span>Showing all active services</span>
+        </div>
+        <div class="sort-row" aria-label="Sort services">
+          <button type="button" class="sort-chip active">All</button>
+          <button type="button" class="sort-chip">Recently Updated</button>
+          <button type="button" class="sort-chip">Priority</button>
+          <button type="button" class="sort-chip">Renewal Date</button>
+        </div>
+
+        <article class="listing-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#000000 0%,#983222 70%,#ba5624 100%);">
+            <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="8" y="16" width="48" height="36" rx="4" stroke="rgba(255,255,255,0.68)" stroke-width="2"/>
+              <path d="M8 26H56" stroke="rgba(255,255,255,0.68)" stroke-width="2"/>
+              <rect x="14" y="33" width="12" height="8" rx="2" fill="rgba(215,210,203,0.55)"/>
+            </svg>
+            <span class="card-badge">Active</span>
+          </div>
+          <div class="card-body">
+            <div>
+              <p class="card-category">Account Management</p>
+              <h3>Premier Account Package</h3>
+              <p>Full-service account management with dedicated support, monthly reporting, and priority escalation for service requests.</p>
+              <div class="card-tags">
+                <span class="tag">Monthly Reports</span>
+                <span class="tag">Dedicated Rep</span>
+                <span class="tag">Priority Queue</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="rate-block">
+                <span class="label">Monthly Rate</span>
+                <div class="rate">$1,200 <span class="sub">/ mo</span></div>
+                <div class="note">Renews Oct 1, 2026</div>
+              </div>
+              <div class="card-actions">
+                <button type="button" class="btn btn-outline">Details</button>
+                <button type="button" class="btn btn-primary">Manage</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#1d1b19 0%,#5b2a1c 60%,#983222 100%);">
+            <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="32" cy="32" r="20" stroke="rgba(255,255,255,0.65)" stroke-width="2"/>
+              <path d="M32 22V32L39 36" stroke="rgba(255,255,255,0.65)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="card-badge review">Under Review</span>
+          </div>
+          <div class="card-body">
+            <div>
+              <p class="card-category">Technical Support</p>
+              <h3>24/7 Monitoring &amp; Alerts</h3>
+              <p>Continuous uptime monitoring, automated incident alerts, and rapid-response SLA coverage across registered endpoints.</p>
+              <div class="card-tags">
+                <span class="tag">24/7 Monitoring</span>
+                <span class="tag">Instant Alerts</span>
+                <span class="tag">SLA Dashboard</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="rate-block">
+                <span class="label">Monthly Rate</span>
+                <div class="rate">$650 <span class="sub">/ mo</span></div>
+                <div class="note">Review in progress</div>
+              </div>
+              <div class="card-actions">
+                <button type="button" class="btn btn-outline">Details</button>
+                <button type="button" class="btn btn-primary">View Status</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="listing-card">
+          <div class="card-img" style="background:linear-gradient(135deg,#983222 0%,#ba5624 62%,#d78359 100%);">
+            <svg width="72" height="72" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M16 48L24 32L32 40L40 24L48 36" stroke="rgba(255,255,255,0.75)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="10" y="10" width="44" height="44" rx="4" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
+            </svg>
+            <span class="card-badge">Active</span>
+          </div>
+          <div class="card-body">
+            <div>
+              <p class="card-category">Billing &amp; Payments</p>
+              <h3>Automated Billing Suite</h3>
+              <p>Consolidated invoicing, auto-pay enrollment, spend analytics, and downloadable statements for all active service lines.</p>
+              <div class="card-tags">
+                <span class="tag">Auto-Pay</span>
+                <span class="tag">Statements</span>
+                <span class="tag">Spend Analytics</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="rate-block">
+                <span class="label">Included</span>
+                <div class="rate">No <span class="sub">extra fee</span></div>
+                <div class="note">Bundled with Premier</div>
+              </div>
+              <div class="card-actions">
+                <button type="button" class="btn btn-outline">Details</button>
+                <button type="button" class="btn btn-primary">Manage</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <aside id="support" class="sidebar" aria-label="Account information">
+        <div class="sidebar-card">
+          <h4>Account Balance</h4>
+          <div class="balance-display">
+            <span class="bal-num">$4,320</span>
+            <span class="bal-label">Current Balance</span>
+          </div>
+          <ul class="feature-list">
+            <li>Premier support tier active</li>
+            <li>Priority ticket routing</li>
+            <li>Dedicated account manager</li>
+            <li>Quarterly business review</li>
+          </ul>
+          <button type="button" class="btn btn-outline" style="width:100%;margin-top:1rem;">View Billing History</button>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>Recent Activity</h4>
+          <div class="activity-item">
+            <div class="act-title">Support Ticket #8821 Closed</div>
+            <div class="act-date">Aug 9, 2026 · Resolved in 2h 14m</div>
+          </div>
+          <div class="activity-item">
+            <div class="act-title">Invoice #INV-2026-08 Generated</div>
+            <div class="act-date">Aug 1, 2026 · $1,850.00</div>
+          </div>
+          <button type="button" class="btn btn-outline" style="width:100%;">View All Activity</button>
+        </div>
+
+        <div class="sidebar-card support-card">
+          <h4>Need Assistance?</h4>
+          <p>A support specialist can help with service questions, billing inquiries, account changes, and technical support.</p>
+          <button type="button" class="btn" onclick="openCxoneGuide()">Chat with Support</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">Nexus<span>Portal</span> Client</div>
+        <p class="footer-description">Centralized account management for Premier clients.</p>
+      </div>
+      <div class="footer-col">
+        <h5>My Account</h5>
+        <a href="#">Profile &amp; Settings</a>
+        <a href="#services">Active Services</a>
+        <a href="#">Billing History</a>
+        <a href="#">Documents</a>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <a href="#">Account Management</a>
+        <a href="#">Technical Support</a>
+        <a href="#">Billing Suite</a>
+        <a href="#">Compliance</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#support">Live Chat</a>
+        <a href="#">FAQs</a>
+        <a href="#">Submit a Ticket</a>
+        <a href="tel:18005550199">1-800-555-0199</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms &amp; Conditions</a>
+      <span>© 2026 NexusPortal. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.filter-tab').forEach(function (button) {
+      button.addEventListener('click', function () {
+        document.querySelectorAll('.filter-tab').forEach(function (item) {
+          item.classList.remove('active');
+        });
+        button.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.sort-chip').forEach(function (button) {
+      button.addEventListener('click', function () {
+        document.querySelectorAll('.sort-chip').forEach(function (item) {
+          item.classList.remove('active');
+        });
+        button.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
