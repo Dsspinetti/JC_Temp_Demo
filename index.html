@@ -414,6 +414,17 @@
     }
     .footer-bottom a { color: rgba(255,255,255,0.34); text-decoration: none; }
 
+    .language-selector select {
+      min-height: 40px;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--charcoal);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
     @media (max-width: 1000px) {
       nav { display: none; }
       .filter-row { grid-template-columns: 1fr 1fr; }
@@ -454,8 +465,20 @@
       document.head.appendChild(e)
       })('cxone','https://web-modules-de-na2.nicecxone-gov.com/loader/1/loader.js');
 
-    cxone('init', '1209');
-    cxone('guide', 'init');
+      const selectedLanguage =
+        localStorage.getItem('demoLanguage') || 'en-US';
+      
+      cxone('init', '1209');
+      
+      cxone('guide', 'init', {
+        locale: selectedLanguage
+      });
+      
+      if (selectedLanguage === 'es-ES') {
+        cxone('chat', 'setLocale', 'es-ES');
+      }
+
+    cxone('chat', 'hideAssignedAgent');
 
     cxone('chat', 'hideAssignedAgent');
     cxone('chat', 'enableCloseIcon', true);
@@ -528,6 +551,12 @@
         <a href="#">Billing</a>
         <a href="#support">Support</a>
       </nav>
+      <div class="language-selector">
+      <select id="languageSelect">
+        <option value="en-US">English</option>
+        <option value="es-ES">Español</option>
+        </select>
+      </div>
       <a href="#" class="btn btn-primary">New Request</a>
     </div>
   </header>
@@ -755,6 +784,23 @@
       <div class="footer-col">
         <h5>Support</h5>
         <a href="#support">Live Chat</a>
+        
+        <script>
+          const languageSelect = document.getElementById('languageSelect');
+        
+          const currentLanguage =
+            localStorage.getItem('demoLanguage') || 'en-US';
+        
+          languageSelect.value = currentLanguage;
+        
+          languageSelect.addEventListener('change', function () {
+            localStorage.setItem('demoLanguage', this.value);
+        
+            // Reload so Guide initializes with the new locale
+            location.reload();
+          });
+        </script>
+        
         <a href="#">FAQs</a>
         <a href="#">Submit a Ticket</a>
         <a href="tel:18005550199">1-800-555-0199</a>
