@@ -7,14 +7,16 @@ This demo page includes NICE CXone Guide and Chat integration with support for b
 A language selector has been added to the page that allows users to switch between:
 
 - English (`en-US`)
-- Spanish (`es-US`)
+- Spanish (`es-ES`)
 
 The selected language is used to:
 
 1. Set the CXone Guide locale.
 2. Set the CXone Chat locale.
-3. Populate the custom CXone field `language_select`.
+3. Populate the CXone custom field `language_select`.
 4. Persist the user's language preference using browser local storage.
+
+> **Important:** The locale used by CXone Guide and Chat for Spanish is `es-ES`, while the custom field value sent to CXone is `es-US`. This is intentional and required for this implementation.
 
 ---
 
@@ -25,7 +27,7 @@ A language dropdown is displayed in the page header.
 ```html
 <select id="languageSelect">
   <option value="en-US">English</option>
-  <option value="es-US">Español</option>
+  <option value="es-ES">Español</option>
 </select>
 ```
 
@@ -54,7 +56,7 @@ en-US
 
 if no language has been selected.
 
-The value is then applied to both Guide and Chat.
+The selected language is then applied to both Guide and Chat.
 
 ```javascript
 cxone('guide', 'init', {
@@ -63,6 +65,19 @@ cxone('guide', 'init', {
 
 cxone('chat', 'setLocale', selectedLanguage);
 ```
+
+### Language Mapping
+
+The page uses a separate value when populating the CXone custom field.
+
+```javascript
+const languageCustomFieldValue =
+  selectedLanguage === 'es-ES'
+    ? 'es-US'
+    : 'en-US';
+```
+
+This allows CXone Guide and Chat to use the proper localization locale (`es-ES`) while still sending the expected custom field value (`es-US`) to Studio, routing logic, or integrations.
 
 ---
 
@@ -74,27 +89,27 @@ The page populates the custom field:
 language_select
 ```
 
-using the currently selected language.
-
-Example values:
-
-```text
-en-US
-es-US
-```
+using the mapped language value.
 
 Configuration:
 
 ```javascript
-cxone('chat', 'setCustomField',
+cxone('chat', 'setContactCustomField',
   'language_select',
-  selectedLanguage
+  languageCustomFieldValue
 );
 ```
 
+### Values Sent to CXone
+
+| Selected Language | Custom Field Value |
+|------------------|-------------------|
+| English | en-US |
+| Spanish | es-US |
+
 ### CXone Custom Field Definition
 
-The following custom field must exist in the CXone business unit:
+The following custom field must exist in the CXone business unit.
 
 **Ident**
 
@@ -138,6 +153,13 @@ demoLanguage
 
 This allows the user's language preference to persist across page refreshes.
 
+Stored values:
+
+```text
+en-US
+es-ES
+```
+
 ---
 
 ## Current Language Logic
@@ -145,7 +167,7 @@ This allows the user's language preference to persist across page refreshes.
 | User Selection | Guide Locale | Chat Locale | Custom Field Value |
 |---------------|-------------|-------------|-------------------|
 | English | en-US | en-US | en-US |
-| Spanish | es-US | es-US | es-US |
+| Spanish | es-ES | es-ES | es-US |
 
 ---
 
@@ -158,7 +180,7 @@ Example:
 ```javascript
 const browserLanguage =
   navigator.language.startsWith('es')
-    ? 'es-US'
+    ? 'es-ES'
     : 'en-US';
 
 const selectedLanguage =
@@ -174,22 +196,7 @@ With this approach:
 
 ---
 
-## Future Enhancements
 
-If additional languages are required:
-
-1. Add a new option to the language dropdown.
-2. Add the language as a valid value in the CXone custom field.
-3. Ensure Guide and Chat translations exist for the selected locale.
-4. Update any Studio scripts, Guide workflows, bots, or routing logic that consume `language_select`.
-
-Example:
-
-```html
-<option value="fr-FR">Français</option>
-```
-
----
 
 ## CXone Dependencies
 
@@ -199,11 +206,17 @@ This implementation assumes:
 - CXone Chat localization is enabled.
 - Spanish translations exist within Guide.
 - The custom field `language_select` has been created in CXone.
-- Any Studio script, bot workflow, or routing logic consuming the value expects locale values in the format:
+- Any Studio script, bot workflow, or routing logic consuming the value expects:
 
 ```text
 en-US
 es-US
+```
+
+- The CXone Guide locale for Spanish is configured as:
+
+```text
+es-ES
 ```
 
 ---
@@ -216,6 +229,7 @@ The following enhancements were made to the original demo page:
 - Added Guide locale initialization.
 - Added Chat locale initialization.
 - Added custom field population (`language_select`).
+- Added language-to-custom-field mapping logic.
 - Added language persistence using localStorage.
 - Added automatic page reload when a language selection changes.
 - Added support for optional browser locale detection.
@@ -226,7 +240,7 @@ This allows a single HTML page to support both English and Spanish users without
 
 ## Testing
 
-Verify the following scenarios during implementation:
+Verify the following scenarios during implementation.
 
 ### English
 
@@ -246,6 +260,7 @@ Verify the following scenarios during implementation:
 4. Confirm:
    - Guide displays in Spanish.
    - Chat displays in Spanish.
+   - Guide requests use `locale=es-ES`.
    - `language_select = es-US`.
 
 ### Persistence
@@ -254,19 +269,40 @@ Verify the following scenarios during implementation:
 2. Refresh the page.
 3. Confirm the selected language remains active.
 
+### Developer Validation
+
+When Spanish is selected, verify browser Developer Tools show Guide requests similar to:
+
+```text
+.../configuration?locale=es-ES
+```
+
+and not:
+
+```text
+.../configuration?locale=es-US
+```
+
 ---
 
 ## Support
 
-If modifications are made to language values, Guide localization, Studio routing, or bot integrations, ensure any references to the custom field below remain synchronized:
+If modifications are made to language values, Guide localization, Studio routing, or bot integrations, ensure references to the custom field below remain synchronized:
 
 ```text
 language_select
 ```
 
-Expected values:
+Expected custom field values:
 
 ```text
 en-US
 es-US
+```
+
+Expected CXone localization values:
+
+```text
+en-US
+es-ES
 ```
