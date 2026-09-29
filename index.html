@@ -157,16 +157,15 @@
     cxone('guide', 'init', { locale: selectedLanguage });
     cxone('chat', 'setLocale', selectedLanguage);
 
-    // Guide launches the chat, so provide the hidden contact field through Guide.
-    cxone('guide', 'setCustomFields', {
-      contactCustomFields: [
-        {
-          ident: 'language_select',
-          value: languageCustomFieldValue,
-          hidden: true
-        }
-      ]
-    });
+    // Store the mapped value on the CXone contact before the chat starts.
+    // Widget locale: es-ES. Studio/contact custom field value: es-US.
+    cxone('chat', 'setContactCustomField',
+      'language_select',
+      languageCustomFieldValue
+    );
+
+    console.log('CXone widget locale:', selectedLanguage);
+    console.log('CXone language_select value:', languageCustomFieldValue);
 
     cxone('guide', 'hidePreSurvey');
     cxone('chat', 'hideAssignedAgent');
