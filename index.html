@@ -465,14 +465,26 @@
       document.head.appendChild(e)
       })('cxone','https://web-modules-de-na2.nicecxone-gov.com/loader/1/loader.js');
 
-    const selectedLanguage =
-      localStorage.getItem('demoLanguage') || 'en-US';
-    
-    cxone('init', '1209');
-    
-    cxone('guide', 'init', {
-      locale: selectedLanguage
-    });
+      const selectedLanguage =
+        localStorage.getItem('demoLanguage') || 'en-US';
+      
+      const languageCustomFieldValue =
+        selectedLanguage === 'es-ES'
+          ? 'es-US'
+          : 'en-US';
+      
+      cxone('init', '1209');
+      
+      cxone('guide', 'init', {
+        locale: selectedLanguage
+      });
+      
+      cxone('chat', 'setLocale', selectedLanguage);
+      
+      cxone('chat', 'setContactCustomField',
+        'language_select',
+        languageCustomFieldValue
+      );
     
     cxone('chat', 'setLocale', selectedLanguage);
     cxone('chat', 'setContactCustomField', 'language_select', selectedLanguage);
@@ -566,7 +578,7 @@
       <select id="languageSelect">
         <option value="en-US">English</option>
         <option value="es-US">Español</option>
-        </select>
+      </select>
       </div>
       <a href="#" class="btn btn-primary">New Request</a>
     </div>
