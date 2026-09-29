@@ -465,30 +465,27 @@
       document.head.appendChild(e)
       })('cxone','https://web-modules-de-na2.nicecxone-gov.com/loader/1/loader.js');
 
-      const selectedLanguage =
-        localStorage.getItem('demoLanguage') || 'en-US';
-      
-      const languageCustomFieldValue =
-        selectedLanguage === 'es-ES'
-          ? 'es-US'
-          : 'en-US';
-      
-      cxone('init', '1209');
-      
-      cxone('guide', 'init', {
-        locale: selectedLanguage
-      });
-      
-      cxone('chat', 'setLocale', selectedLanguage);
-      
-      cxone('chat', 'setContactCustomField',
-        'language_select',
-        languageCustomFieldValue
-      );
+    const selectedLanguage =
+      localStorage.getItem('demoLanguage') || 'en-US';
+    
+    const languageCustomFieldValue =
+      selectedLanguage === 'es-ES'
+        ? 'es-US'
+        : 'en-US';
+    
+    cxone('init', '1209');
+    
+    cxone('guide', 'init', {
+      locale: selectedLanguage
+    });
     
     cxone('chat', 'setLocale', selectedLanguage);
-    cxone('chat', 'setContactCustomField', 'language_select', selectedLanguage);
-
+    
+    cxone('chat', 'setContactCustomField',
+      'language_select',
+      languageCustomFieldValue
+    );
+    
     cxone('chat', 'hideAssignedAgent');
     cxone('chat', 'enableCloseIcon', true);
     cxone('chat', 'setCustomerName', 'Jeffco Demo');
@@ -534,15 +531,29 @@
       document.head.appendChild(style);
     }, 1000);
 
-    function openCxoneGuide() {
-    
-      const selectedLanguage =
-        localStorage.getItem('demoLanguage') || 'en-US';
-    
-      cxone('chat', 'setContactCustomField',
-        'language_select',
-        selectedLanguage
-      );
+      function openCxoneGuide() {
+      
+        const selectedLanguage =
+          localStorage.getItem('demoLanguage') || 'en-US';
+      
+        const languageCustomFieldValue =
+          selectedLanguage === 'es-ES'
+            ? 'es-US'
+            : 'en-US';
+      
+        cxone('chat', 'setContactCustomField',
+          'language_select',
+          languageCustomFieldValue
+        );
+      
+        const guideButton = document.querySelector(
+          '#cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]'
+        );
+      
+        if (guideButton) {
+          guideButton.click();
+        }
+      }
     
       var guideButton = document.querySelector(
         '#cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]'
@@ -577,7 +588,7 @@
       <div class="language-selector">
       <select id="languageSelect">
         <option value="en-US">English</option>
-        <option value="es-US">Español</option>
+        <option value="es-ES">Español</option>
       </select>
       </div>
       <a href="#" class="btn btn-primary">New Request</a>
@@ -817,12 +828,9 @@
           
           languageSelect.value = currentLanguage;
           
-          languageSelect.addEventListener('change', function () {
-          
+          languageSelect.addEventListener('change', function () {          
             localStorage.setItem('demoLanguage', this.value);
-          
-            location.reload();
-          
+            location.reload();          
           });
         </script>
         
