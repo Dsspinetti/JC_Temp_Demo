@@ -475,7 +475,7 @@
     });
     
     cxone('chat', 'setLocale', selectedLanguage);
-    cxone('chat', 'setCustomField', 'language_select', selectedLanguage);
+    cxone('chat', 'setContactCustomField', 'language_select', selectedLanguage);
 
     cxone('chat', 'hideAssignedAgent');
     cxone('chat', 'enableCloseIcon', true);
@@ -527,7 +527,7 @@
       const selectedLanguage =
         localStorage.getItem('demoLanguage') || 'en-US';
     
-      cxone('chat', 'setCustomField',
+      cxone('chat', 'setContactCustomField',
         'language_select',
         selectedLanguage
       );
