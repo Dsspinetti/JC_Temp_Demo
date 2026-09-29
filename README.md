@@ -7,7 +7,7 @@ This demo page includes NICE CXone Guide and Chat integration with support for b
 A language selector has been added to the page that allows users to switch between:
 
 - English (`en-US`)
-- Spanish (`es-ES`)
+- Spanish (`es-US`)
 
 The selected language is used to:
 
@@ -25,7 +25,7 @@ A language dropdown is displayed in the page header.
 ```html
 <select id="languageSelect">
   <option value="en-US">English</option>
-  <option value="es-ES">Español</option>
+  <option value="es-US">Español</option>
 </select>
 ```
 
@@ -80,7 +80,7 @@ Example values:
 
 ```text
 en-US
-es-ES
+es-US
 ```
 
 Configuration:
@@ -112,7 +112,7 @@ Dropdown
 
 ```text
 en-US | English
-es-ES | Spanish
+es-US | Spanish
 ```
 
 This field can be referenced by Studio scripts, routing logic, Guide workflows, reporting, or bot integrations.
@@ -145,7 +145,7 @@ This allows the user's language preference to persist across page refreshes.
 | User Selection | Guide Locale | Chat Locale | Custom Field Value |
 |---------------|-------------|-------------|-------------------|
 | English | en-US | en-US | en-US |
-| Spanish | es-ES | es-ES | es-ES |
+| Spanish | es-US | es-US | es-US |
 
 ---
 
@@ -158,7 +158,7 @@ Example:
 ```javascript
 const browserLanguage =
   navigator.language.startsWith('es')
-    ? 'es-ES'
+    ? 'es-US'
     : 'en-US';
 
 const selectedLanguage =
@@ -203,7 +203,7 @@ This implementation assumes:
 
 ```text
 en-US
-es-ES
+es-US
 ```
 
 ---
@@ -246,7 +246,7 @@ Verify the following scenarios during implementation:
 4. Confirm:
    - Guide displays in Spanish.
    - Chat displays in Spanish.
-   - `language_select = es-ES`.
+   - `language_select = es-US`.
 
 ### Persistence
 
@@ -268,5 +268,5 @@ Expected values:
 
 ```text
 en-US
-es-ES
+es-US
 ```
