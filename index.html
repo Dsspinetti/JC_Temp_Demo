@@ -465,20 +465,17 @@
       document.head.appendChild(e)
       })('cxone','https://web-modules-de-na2.nicecxone-gov.com/loader/1/loader.js');
 
-      const selectedLanguage =
-        localStorage.getItem('demoLanguage') || 'en-US';
-      
-      cxone('init', '1209');
-      
-      cxone('guide', 'init', {
-        locale: selectedLanguage
-      });
-      
-      if (selectedLanguage === 'es-ES') {
-        cxone('chat', 'setLocale', 'es-ES');
-      }
-
-    cxone('chat', 'hideAssignedAgent');
+    const selectedLanguage =
+      localStorage.getItem('demoLanguage') || 'en-US';
+    
+    cxone('init', '1209');
+    
+    cxone('guide', 'init', {
+      locale: selectedLanguage
+    });
+    
+    cxone('chat', 'setLocale', selectedLanguage);
+    cxone('chat', 'setCustomField', 'language_select', selectedLanguage);
 
     cxone('chat', 'hideAssignedAgent');
     cxone('chat', 'enableCloseIcon', true);
@@ -526,8 +523,22 @@
     }, 1000);
 
     function openCxoneGuide() {
-      var guideButton = document.querySelector('#cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]');
-      if (guideButton) guideButton.click();
+    
+      const selectedLanguage =
+        localStorage.getItem('demoLanguage') || 'en-US';
+    
+      cxone('chat', 'setCustomField',
+        'language_select',
+        selectedLanguage
+      );
+    
+      var guideButton = document.querySelector(
+        '#cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]'
+      );
+    
+      if (guideButton) {
+        guideButton.click();
+      }
     }
   </script>
 </head>
@@ -786,18 +797,20 @@
         <a href="#support">Live Chat</a>
         
         <script>
-          const languageSelect = document.getElementById('languageSelect');
-        
+          const languageSelect =
+            document.getElementById('languageSelect');
+          
           const currentLanguage =
             localStorage.getItem('demoLanguage') || 'en-US';
-        
+          
           languageSelect.value = currentLanguage;
-        
+          
           languageSelect.addEventListener('change', function () {
+          
             localStorage.setItem('demoLanguage', this.value);
-        
-            // Reload so Guide initializes with the new locale
+          
             location.reload();
+          
           });
         </script>
         
