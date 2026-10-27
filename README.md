@@ -245,6 +245,7 @@ Use a new chat interaction for each test. Existing interactions may retain value
 4. Confirm Guide and Chat display in English.
 5. Confirm Studio receives `language_select = en-US`.
 6. Confirm Omilia uses the English experience.
+7. End the chat through the ellipses in the header
 
 ### Spanish test
 
@@ -254,6 +255,7 @@ Use a new chat interaction for each test. Existing interactions may retain value
 4. Confirm Guide and Chat display in Spanish.
 5. Confirm Studio receives `language_select = es-US`.
 6. Confirm Omilia uses the Spanish experience.
+7. End the chat through the ellipses in the header
 
 ### Persistence test
 
