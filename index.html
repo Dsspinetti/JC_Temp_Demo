@@ -191,9 +191,14 @@
         height: 60px !important;
         margin-top: 5px;
       }
+
+      [data-selector=\"QUEUE_COUNTER_BAR\"] {
+      display: none !important
+      }
+
     `);
 
-    // cxone('chat', 'setCustomCss', "[data-selector=\"QUEUE_COUNTER_BAR\"] {display: none !important}");
+    
 
     setTimeout(function () {
       const style = document.createElement('style');
