@@ -200,17 +200,17 @@
 
     
 
-    setTimeout(function () {
-      const style = document.createElement('style');
-      style.textContent = `
-        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus,
-        #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus-visible {
-          outline: 0.2em solid #983222 !important;
-          outline-offset: 0 !important;
-        }
-      `;
-      document.head.appendChild(style);
-    }, 1000);
+    // setTimeout(function () {
+    //   const style = document.createElement('style');
+    //   style.textContent = `
+    //     #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus,
+    //     #cxone-guide-container [data-selector="GUIDE_CHANNEL_BUTTON"]:focus-visible {
+    //       outline: 0.2em solid #983222 !important;
+    //       outline-offset: 0 !important;
+    //     }
+    //   `;
+    //   document.head.appendChild(style);
+    // }, 1000);
 
     function openCxoneGuide() {
       const guideButton = document.querySelector(
